@@ -13,7 +13,7 @@
             <h2 class="card-title" v-bind:class="{'task-done': task.done}">{{task.description}}</h2>
             <div class="card-actions justify-end">
               <button class="btn btn-primary">Bearbeiten</button>
-              <button class="btn btn-error">Löschen</button>
+              <button class="btn btn-error" v-on:click="deleteTask(task.id)">Löschen</button>
             </div>
           </div>
         </section>
@@ -38,6 +38,11 @@ export default {
         fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
         fontWeight: 600
       }
+    }
+  },
+  methods: {
+    deleteTask(id) {
+      this.tasks = this.tasks.filter(task => task.id !== id);
     }
   }
 }
