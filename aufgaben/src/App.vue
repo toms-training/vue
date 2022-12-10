@@ -1,7 +1,7 @@
 <template>
   <section class="container px-6 py-16 prose">
     <div id="tasks-header">
-      <h1 class="text-center">Aufgabenliste</h1>
+      <h1 class="text-center">{{ title }}</h1>
       <button class="btn btn-primary">Aufgabe hinzufügen</button>
       <hr>
     </div>
@@ -15,6 +15,11 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {
+      title: 'Aufgabenliste'
+    }
+  }
 }
 </script>
