@@ -7,7 +7,7 @@
     </div>
     <div id="tasks-list">
       <section>
-        <section id="no-tasks" v-bind:class="{hidden: tasks.length > 0}">Keine Aufgaben verfügbar</section>
+        <section id="no-tasks" v-if="tasks.length === 0">Keine Aufgaben verfügbar</section>
       </section>
     </div>
   </section>
