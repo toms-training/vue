@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Aufgaben</title>
+    <style>
+        #task-template {
+            display: none;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+        <section class="container px-6 py-16 prose">
+            <div id="tasks-header">
+                <h1 class="text-center">Aufgabenliste</h1>
+                <button class="btn btn-primary" onclick="addTask()">Aufgabe hinzufügen</button>
+                <hr>
+            </div>
+            <div id="tasks-list">
+                <section>
+                    <section id="no-tasks">Keine Aufgaben verfügbar</section>
+                    <section id="task-template" class="card border-2 m-4">
+                        <div class="card-body">
+                            <h2 class="card-title"></h2>
+                            <div class="card-actions justify-end">
+                                <button class="btn btn-primary">Bearbeiten</button>
+                                <button class="btn btn-error">Löschen</button>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </div>
+        </section>
+    </div>
+    <script>
+        let tasks = [];
+
+        updateTasksView();
+
+        function updateTasksView() {
+            resetTasksView();
+
+            if (tasks.length === 0) {
+                showNoTasks();
+            } else {
+                showTasks();
+            }
+        }
+
+        function showNoTasks() {
+            document.getElementById('no-tasks').style.display = 'inherit';
+        }
+
+        function resetTasksView() {
+            document.querySelectorAll('.task').forEach(next => next.remove());
+        }
+
+        function showTasks() {
+            document.getElementById('no-tasks').style.display = 'none';
+
+            tasks.forEach(task => {
+                const template = document.getElementById('task-template').cloneNode(true);
+                template.id = `task-${task.id}`;
+                template.classList.add('task');
+                template.querySelector('.card-title').textContent = task.description;
+
+                template.querySelector('.btn-primary').addEventListener('click', () => alert(`Bearbeite Aufgabe Nr. ${task.id}`));
+                template.querySelector('.btn-error').addEventListener('click', () => {
+                    tasks = tasks.filter(next => next.id !== task.id);
+                    updateTasksView();
+                });
+
+                document.querySelector('#tasks-list section').append(template);
+            })
+        }
+
+        function addTask() {
+            const id = tasks.length + 1;
+             tasks.push({
+                id,
+                description: `Aufgabe ${id}`
+             });
+
+             updateTasksView();
+        }
+    </script>
+  </body>
+</html>
