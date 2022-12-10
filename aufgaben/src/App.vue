@@ -25,7 +25,7 @@
         <form @submit.prevent="submitTask">
           <div class="form-control px-4 my-5">
             <input type="text" class="input input-bordered" id="description" placeholder="Beschreibung"
-              v-model.trim="currentTask.description" :class="{error: currentTask.description.length === 0}">
+              v-model.trim="currentTask.description" :class="{error: descriptionIsEmpty}">
           </div>
           <label class="cursor-pointer px-4 label justify-start">
             <div class="mr-2">
@@ -36,7 +36,7 @@
           </label>
           <div class="form-control px-4 my-5">
             <input class="btn btn-sm btn-primary" type="submit"
-              :value="currentTask.id > 0 ? 'Aktualisieren' : 'Hinzufügen'" :disabled="currentTask.description.length === 0">
+              :value="currentTask.id > 0 ? 'Aktualisieren' : 'Hinzufügen'" :disabled="!activateSubmit">
           </div>
         </form>
       </section>
@@ -61,7 +61,9 @@ export default {
         fontWeight: 600
       },
       currentTask: new Task(''),
-      showForm: false
+      showForm: false,
+      descriptionIsEmpty: false,
+      activateSubmit: false
     }
   },
   methods: {
@@ -92,6 +94,16 @@ export default {
     editTask(task) {
       this.currentTask = task;
       this.showForm = true;
+    }
+  },
+  watch: {
+    currentTask: {
+      handler(task) {
+        this.descriptionIsEmpty = task.description?.length === 0;
+        this.activateSubmit = !this.descriptionIsEmpty;
+      },
+      deep: true,
+      immediate: true
     }
   }
 }
