@@ -1,7 +1,7 @@
 <template>
   <section class="container px-6 py-16 prose">
     <div id="tasks-header">
-      <h1 class="text-center">{{ title }}</h1>
+      <h1 class="text-center" v-bind:style="titleStyle">{{ title }}</h1>
       <button class="btn btn-primary" v-bind:disabled="!canAddTask">Aufgabe hinzufügen</button>
       <hr>
     </div>
@@ -20,7 +20,13 @@ export default {
     return {
       title: 'Aufgabenliste',
       canAddTask: true,
-      tasks: []
+      tasks: [],
+      titleStyle: {
+        color: 'cadetblue',
+        margin: '10px auto 25px',
+        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+        fontWeight: 600
+      }
     }
   }
 }
