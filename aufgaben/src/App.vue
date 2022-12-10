@@ -7,7 +7,7 @@
     </div>
     <div id="tasks-list">
       <section>
-        <section id="no-tasks">Keine Aufgaben verfügbar</section>
+        <section id="no-tasks" v-bind:class="{hidden: tasks.length > 0}">Keine Aufgaben verfügbar</section>
       </section>
     </div>
   </section>
@@ -19,8 +19,15 @@ export default {
   data() {
     return {
       title: 'Aufgabenliste',
-      canAddTask: true
+      canAddTask: true,
+      tasks: []
     }
   }
 }
 </script>
+
+<style scoped>
+.hidden {
+  display: none;
+}
+</style>
