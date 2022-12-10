@@ -22,10 +22,10 @@
     <div id="task-form" v-if="showForm">
       <section>
         <h2>Aufgabe {{ currentTask.id > 0 ? 'bearbeiten' : 'hinzufügen' }}</h2>
-        <form @submit="submitTask($event)">
+        <form @submit.prevent="submitTask">
           <div class="form-control px-4 my-5">
             <input type="text" class="input input-bordered" id="description" placeholder="Beschreibung"
-              v-model="currentTask.description" :class="{error: currentTask.description.length === 0}">
+              v-model.trim="currentTask.description" :class="{error: currentTask.description.length === 0}">
           </div>
           <label class="cursor-pointer px-4 label justify-start">
             <div class="mr-2">
@@ -68,9 +68,7 @@ export default {
     deleteTask(id) {
       this.tasks = this.tasks.filter(task => task.id !== id);
     },
-    submitTask(event) {
-      event.preventDefault();
-
+    submitTask() {
       const isNew = this.currentTask.id === 0;
 
       if (isNew) {
