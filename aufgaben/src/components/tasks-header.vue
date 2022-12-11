@@ -1,25 +1,36 @@
 <template>
-    <h1 class="text-center" v-bind:style="titleStyle">{{ title }}</h1>
-    <button class="btn btn-primary" v-bind:disabled="!canAddTask" @click="addTask">Aufgabe hinzufügen</button>
+    <h1 class="text-center" :style="style">{{ title }}</h1>
+    <button class="btn btn-primary" :disabled="!canAddTask" @click="$emit('addTask')">Aufgabe hinzufügen</button>
     <hr>
 </template>
 <script>
+import { TitleStyle } from "../entities/title-style.class";
+
 export default {
     name: 'TasksHeader',
+    props: {
+        title: {
+            type: String,
+            required: true
+        },
+        titleStyle: {
+            type: TitleStyle,
+            required: false
+        },
+        canAddTask: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
+    },
     data() {
         return {
-            title: 'Aufgabenliste',
-            canAddTask: true,
-            titleStyle: {
-                color: 'cadetblue',
+            style: {
+                ...this.titleStyle,
                 margin: '10px auto 25px',
-                fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-                fontWeight: 600
             }
         }
     },
-    methods: {
-        addTask() { }
-    }
+    emits: ['addTask']
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <section class="container px-6 py-16 prose">
-    <tasks-header></tasks-header>
-    <tasks-list v-if="!showForm"></tasks-list>
-    <task-form v-if="showForm" :task="activeTask"></task-form>
+    <tasks-header title="Aufgabenliste" :titleStyle="titleStyle" @addTask="addTask"></tasks-header>
+    <tasks-list v-if="!showForm" @edit="editTask" @delete="deleteTask" :tasks="tasks"></tasks-list>
+    <task-form v-if="showForm" :task="activeTask" @submit="submitTask"></task-form>
   </section>
 </template>
 
@@ -11,6 +11,7 @@ import TasksHeader from "./components/tasks-header.vue";
 import TasksList from "./components/tasks-list.vue";
 import TaskForm from "./components/task-form.vue";
 import { Task } from './entities/task.class';
+import { TitleStyle } from "./entities/title-style.class";
 
 export default {
   name: 'App',
@@ -22,43 +23,68 @@ export default {
   data() {
     return {
       showForm: false,
-      activeTask: new Task('')
+      activeTask: new Task(''),
+      titleStyle: createTitleStyle(),
+      tasks: []
     }
   },
-  provide: {
-    tasks: createTasks(3)
+  methods: {
+    addTask() {
+      this.activeTask = new Task('');
+      this.showForm = true;
+    },
+    editTask(task) {
+      this.activeTask = task;
+      this.showForm = true;
+    },
+    deleteTask(task) {
+      this.tasks = this.tasks.filter(next => next.id !== task.id);
+      this.sortTasksByDone();
+    },
+    submitTask(task) {
+      if (task.id > 0) this.updateTask(task);
+      else this.createTask(task);
+
+      this.sortTasksByDone();
+      this.showForm = false;
+    },
+    createTask(task) {
+      task.id = generateId(this.tasks);
+
+      this.tasks.push(task);
+    },
+    updateTask(task) {
+      this.tasks = this.tasks.map(next => {
+        if (next.id === task.id) return task;
+
+        return next;
+      });
+    },
+    sortTasksByDone() {
+      this.tasks = this.tasks.sort((a, b) => {
+        if (a.done) return 1;
+        if (b.done) return -1;
+
+        return 0;
+      });
+    }
   }
 }
 
-function createTasks(amount) {
-  const tasks = [];
+function createTitleStyle() {
+  const style = new TitleStyle();
+  style.color = 'cadetblue';
+  style.fontFamily = '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+  style.fontWeight = 600;
 
-  for (let i = 1; i <= amount; i++) {
-    const task = new Task(`Aufgabe ${i}`);
-    task.id = i;
-
-    if (i % 2 === 0) task.done = true;
-
-    tasks.push(task);
-  }
-
-  return sortTasksByDone(tasks);
+  return style;
 }
 
-function sortTasksByDone(tasks) {
-  return tasks.sort((a, b) => {
-    if (a.done) return 1;
-    if (b.done) return -1;
-
-    return 0;
-  });
-}
-
-/*function generateId(tasks) {
+function generateId(tasks) {
   return tasks.reduce(
     (previousId, task) => previousId > task.id ? previousId : task.id + 1,
-    0
+    1
   );
-}*/
+}
 
 </script>

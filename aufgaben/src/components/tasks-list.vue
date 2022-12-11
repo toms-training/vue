@@ -4,8 +4,8 @@
         <div class="card-body">
             <h2 class="card-title" v-bind:class="{ 'task-done': task.done }">{{ task.description }}</h2>
             <div class="card-actions justify-end">
-                <button class="btn btn-primary" @click="editTask(task)">Bearbeiten</button>
-                <button class="btn btn-error" v-on:click="deleteTask(task.id)">Löschen</button>
+                <button class="btn btn-primary" @click="$emit('edit', task)">Bearbeiten</button>
+                <button class="btn btn-error" v-on:click="$emit('delete', task)">Löschen</button>
             </div>
         </div>
     </section>
@@ -14,13 +14,13 @@
 <script>
 export default {
     name: 'TasksList',
-    inject: ['tasks'],
-    methods: {
-        deleteTask(id) {
-            this.tasks = this.tasks.filter(task => task.id !== id);
-        },
-        editTask() { }
-    }
+    props: {
+        tasks: {
+            type: Array,
+            default: () => []
+        }
+    },
+    emits: ['edit', 'delete']
 }
 </script>
 

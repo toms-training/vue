@@ -1,6 +1,6 @@
 <template>
     <h2>Aufgabe {{ currentTask.id > 0 ? 'bearbeiten' : 'hinzufügen' }}</h2>
-    <form @submit.prevent="submitTask">
+    <form @submit.prevent="$emit('submit', currentTask)">
         <div class="form-control px-4 my-5">
             <input type="text" class="input input-bordered" id="description" placeholder="Beschreibung"
                 v-model.trim="currentTask.description" :class="{ error: descriptionIsEmpty }">
@@ -37,9 +37,7 @@ export default {
             activateSubmit: false
         }
     },
-    methods: {
-        submitTask() { }
-    },
+    emits: ['submit'],
     watch: {
         currentTask: {
             handler(task) {
