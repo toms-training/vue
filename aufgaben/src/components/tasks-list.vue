@@ -12,45 +12,15 @@
 </template>
 
 <script>
-import { Task } from '../entities/task.class';
-
 export default {
     name: 'TasksList',
-    data() {
-        return {
-            tasks: createTasks(3)
-        }
-    },
+    inject: ['tasks'],
     methods: {
         deleteTask(id) {
             this.tasks = this.tasks.filter(task => task.id !== id);
         },
         editTask() { }
     }
-}
-
-function createTasks(amount) {
-    const tasks = [];
-
-    for (let i = 1; i <= amount; i++) {
-        const task = new Task(`Aufgabe ${i}`);
-        task.id = i;
-
-        if (i % 2 === 0) task.done = true;
-
-        tasks.push(task);
-    }
-
-    return sortTasksByDone(tasks);
-}
-
-function sortTasksByDone(tasks) {
-    return tasks.sort((a, b) => {
-        if (a.done) return 1;
-        if (b.done) return -1;
-
-        return 0;
-    });
 }
 </script>
 
