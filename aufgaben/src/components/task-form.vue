@@ -24,9 +24,15 @@ import { Task } from '../entities/task.class';
 
 export default {
     name: 'TaskForm',
+    props: {
+        task: {
+            type: Task,
+            required: true
+        }
+    },
     data() {
         return {
-            currentTask: new Task(''),
+            currentTask: this.task,
             descriptionIsEmpty: false,
             activateSubmit: false
         }

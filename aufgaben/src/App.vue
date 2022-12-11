@@ -2,7 +2,7 @@
   <section class="container px-6 py-16 prose">
     <tasks-header></tasks-header>
     <tasks-list v-if="!showForm"></tasks-list>
-    <task-form v-if="showForm"></task-form>
+    <task-form v-if="showForm" :task="activeTask"></task-form>
   </section>
 </template>
 
@@ -10,6 +10,7 @@
 import TasksHeader from "./components/tasks-header.vue";
 import TasksList from "./components/tasks-list.vue";
 import TaskForm from "./components/task-form.vue";
+import { Task } from './entities/task.class';
 
 export default {
   name: 'App',
@@ -20,7 +21,8 @@ export default {
   },
   data() {
     return {
-      showForm: false
+      showForm: false,
+      activeTask: new Task('')
     }
   }
 }
