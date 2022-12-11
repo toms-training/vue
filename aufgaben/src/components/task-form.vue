@@ -1,6 +1,6 @@
 <template>
     <h2>Aufgabe {{ currentTask.id > 0 ? 'bearbeiten' : 'hinzufügen' }}</h2>
-    <form @submit.prevent="$emit('submit', currentTask)">
+    <form @submit.prevent="$emit('close', persistTask())">
         <div class="form-control px-4 my-5">
             <input type="text" class="input input-bordered" id="description" placeholder="Beschreibung"
                 v-model.trim="currentTask.description" :class="{ error: descriptionIsEmpty }">
@@ -21,9 +21,14 @@
 
 <script>
 import { Task } from '../entities/task.class';
+import axios from 'axios';
+import apiConfig from '../api-config';
 
 export default {
     name: 'TaskForm',
+    created() {
+        this.loadTasks();
+    },
     props: {
         task: {
             type: Task,
@@ -34,10 +39,28 @@ export default {
         return {
             currentTask: this.task,
             descriptionIsEmpty: false,
-            activateSubmit: false
+            activateSubmit: false,
+            tasks: []
         }
     },
-    emits: ['submit'],
+    methods: {
+        loadTasks() {
+            axios.get(`${apiConfig.url}/tasks`)
+                .then(response => this.tasks = response.data)
+                .catch(error => console.error(error));
+        },
+        persistTask() {
+            const url = `${apiConfig.url}/tasks`;
+
+            if (this.currentTask.id === 0) {
+                this.currentTask.id = generateId(this.tasks);
+                return axios.post(url, this.currentTask);
+            }
+
+            return axios.put(`${url}/${this.currentTask.id}`, this.currentTask);
+        }
+    },
+    emits: ['close'],
     watch: {
         currentTask: {
             handler(task) {
@@ -48,6 +71,13 @@ export default {
             immediate: true
         }
     }
+}
+
+function generateId(tasks) {
+    return tasks.reduce(
+        (previousId, task) => previousId > task.id ? previousId : task.id + 1,
+        1
+    );
 }
 </script>
 

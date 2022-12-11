@@ -1,8 +1,8 @@
 <template>
   <section class="container px-6 py-16 prose">
     <tasks-header title="Aufgabenliste" :titleStyle="titleStyle" @addTask="addTask"></tasks-header>
-    <tasks-list v-if="!showForm" @edit="editTask" @delete="deleteTask" :tasks="tasks"></tasks-list>
-    <task-form v-if="showForm" :task="activeTask" @submit="submitTask"></task-form>
+    <tasks-list v-if="!showForm" @edit="editTask"></tasks-list>
+    <task-form v-if="showForm" :task="activeTask" @close="closeForm"></task-form>
   </section>
 </template>
 
@@ -37,36 +37,10 @@ export default {
       this.activeTask = task;
       this.showForm = true;
     },
-    deleteTask(task) {
-      this.tasks = this.tasks.filter(next => next.id !== task.id);
-      this.sortTasksByDone();
-    },
-    submitTask(task) {
-      if (task.id > 0) this.updateTask(task);
-      else this.createTask(task);
-
-      this.sortTasksByDone();
-      this.showForm = false;
-    },
-    createTask(task) {
-      task.id = generateId(this.tasks);
-
-      this.tasks.push(task);
-    },
-    updateTask(task) {
-      this.tasks = this.tasks.map(next => {
-        if (next.id === task.id) return task;
-
-        return next;
-      });
-    },
-    sortTasksByDone() {
-      this.tasks = this.tasks.sort((a, b) => {
-        if (a.done) return 1;
-        if (b.done) return -1;
-
-        return 0;
-      });
+    closeForm(promise) {
+      promise
+        .then(() => this.showForm = false)
+        .catch(error => console.error(error));
     }
   }
 }
@@ -78,13 +52,6 @@ function createTitleStyle() {
   style.fontWeight = 600;
 
   return style;
-}
-
-function generateId(tasks) {
-  return tasks.reduce(
-    (previousId, task) => previousId > task.id ? previousId : task.id + 1,
-    1
-  );
 }
 
 </script>
